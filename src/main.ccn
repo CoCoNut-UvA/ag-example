@@ -1,0 +1,54 @@
+start phase startPhase {
+    info = "The starting point",
+    uid = RT,
+
+    actions {
+        print;
+    }
+};
+
+traversal print {
+    uid = PRT
+};
+
+nodeset tree {
+    nodes = {binop, leaf},
+    attributes {
+        int sum {synthesized},
+        int depth {inherited}
+    }
+};
+
+root node prog {
+    children {
+        tree tree {constructor}
+    },
+    attributes {
+        int sum {synthesized}
+    },
+    equations {
+        this.sum = {args = {tree.sum}},
+        tree.depth = {args = {}}
+    }
+};
+
+node binop {
+    children {
+        tree left {constructor, mandatory},
+        tree right {constructor, mandatory}
+    },
+    equations {
+        this.sum = {args = {left.sum, right.sum}},
+        left.depth = {args = {this.depth}},
+        right.depth = {args = {this.depth}}
+    }
+};
+
+node leaf {
+    attributes {
+        int val {constructor}
+    },
+    equations {
+        this.sum = {args = {this.val}}
+    }
+};
